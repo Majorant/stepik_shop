@@ -50,8 +50,10 @@ class Meal(db.Model):
     description = db.Column(db.String, nullable=False)
     picture = db.Column(db.String, nullable=False)
     # –– категория (category, отношение)
-    category_id = db.Column(db.Integer, nullable=False)
-    category = db.relationship('Category', back_populates='category')
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    category = db.relationship('Category', back_populates='meals')
+    # category = db.relationship('Category', backref=backref('meals', uselist=False))
+
     orders = db.relationship('Order', secondary=orders_meals_association, back_populates='meals')
 
 
@@ -61,7 +63,7 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     # –– блюда (meals, отношение) судя по таблице OneToOne
-    meals = db.relationship('Meal', back_populates='meals')
+    meals = db.relationship('Meal', back_populates='category')
 
 
 class Order(db.Model):

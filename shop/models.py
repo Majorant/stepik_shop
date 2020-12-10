@@ -16,11 +16,9 @@ orders_meals_association = db.Table(
 class User(db.Model):
     __tablename__ = 'users'
 
-
     id = db.Column(db.Integer, primary_key=True)
     mail = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
-    # –– заказы (orders, отношение)
     orders = db.relationship('Order')
 
 
@@ -50,7 +48,7 @@ class Meal(db.Model):
     description = db.Column(db.String, nullable=False)
     picture = db.Column(db.String, nullable=False)
     # –– категория (category, отношение)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     category = db.relationship('Category', back_populates='meals')
     # category = db.relationship('Category', backref=backref('meals', uselist=False))
 

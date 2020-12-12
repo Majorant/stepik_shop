@@ -18,7 +18,7 @@
         <section>
             <h3 class="my-4">{{ c.title }}</h3>
             <div class="row mt-4">
-            {% for m in c.meals[0:3] %}
+            {% for m in c.meals %}
             <div class="col-12 col-md-4">
               <div class="card mb-3">
                 <img src={{ url_for('static', filename='pictures/' + m.picture) }} width="300" height="200" class="card-img-top" alt="">
@@ -33,6 +33,7 @@
         </div>
         </section>
         {% endfor %}
+  </main>
   <footer class="footer">
     <nav class="container navbar navbar-light bg-light">
       <ul class="navbar-nav mr-auto">

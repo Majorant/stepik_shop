@@ -20,7 +20,7 @@ def password_check(form, field):
 
 
 class CartForm(FlaskForm):
-    username = StringField('Ваше имя', validators=[DataRequired(message='Поле не может быть пустым')])
+    name = StringField('Ваше имя', validators=[DataRequired(message='Поле не может быть пустым')])
     address = StringField('Ваше Адрес', validators=[DataRequired(message='Поле не может быть пустым')])
     email = EmailField('Электропочта', validators=[DataRequired(message='Поле не может быть пустым'),
                                                 Email(message='введите корректный email')],
@@ -53,14 +53,18 @@ class ChangePasswordForm(FlaskForm):
 
 # Форма регистрации
 class RegistrationForm(FlaskForm):
-    username = StringField("Имя")
+    email = EmailField('Электропочта', validators=[DataRequired(message='Поле не может быть пустым'),
+                                                Email(message='введите корректный email')],
+                                                render_kw={'autofocus': True})
     password = PasswordField(
-        "Пароль:",
+        'Пароль',
         validators=[
             DataRequired(),
-            # Пароль не менее 8 символов
-            Length(min=8, message="Пароль должен быть не менее 8 символов"),
+            # Пароль не менее 5 символов
+            Length(min=5, message='Пароль должен быть не менее 5 символов'),
             EqualTo('confirm_password', message="Пароли не одинаковые"),
-            password_check
-        ]
+            # отключил, чтобы не мучаться при проверках
+            # password_check,
+            ]
     )
+    confirm_password = PasswordField('Веедите пароль повторно', validators=[DataRequired(),])

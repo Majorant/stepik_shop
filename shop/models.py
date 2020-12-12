@@ -18,7 +18,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     mail = db.Column(db.String, nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     orders = db.relationship('Order')
 
 
@@ -68,7 +68,7 @@ class Order(db.Model):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String, nullable=False)
+    date = db.Column(db.String, nullable=False) # при замене поля на DateTime alembic не видит изменений в схеме
     sum = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Integer, nullable=False)
     mail = db.Column(db.String, nullable=False)

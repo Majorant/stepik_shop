@@ -12,20 +12,18 @@
             <h1 class="h3 mb-3 font-weight-normal">Stepik delivery</h1>
             <p class="h5 font-weight-light">Войдите, чтобы управлять</p>
           </div>
+          {% for elem in form %}
+          {% if elem != form.csrf_token %}
           <div class="mt-5 form-label-group">
-            {% for err in form.email.errors %}
+            {% for err in elem.errors %}
               <p class="error">{{ err }}</p>
             {% endfor %}
-            {{ form.email.label(class="text-muted") }}         <!-- вывод метку поля формы -->
-            {{ form.email(class="form-control") }}               <!-- вывод HTML-тега формы -->
+            {{ elem.label(class="text-muted") }}         <!-- вывод метку поля формы -->
+            {{ elem(class="form-control") }}               <!-- вывод HTML-тега формы -->
           </div>
-          <div class="form-label-group">
-            {% for err in form.password.errors %}
-              <p class="error">{{ err }}</p>
-            {% endfor %}
-            {{ form.password.label(class="text-muted") }}         <!-- вывод метку поля формы -->
-            {{ form.password(class="form-control") }}               <!-- вывод HTML-тега формы -->
-          </div>
+          {% endif %}
+          {% endfor %}
+
           <div class="checkbox mb-3"></div>
           <button class="btn btn-lg btn-danger btn-block" type="submit">Войти</button>
         </form>

@@ -5,12 +5,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-# tablr for ManyToMamy relationship between orders and meals
-orders_meals_association = db.Table(
-    'orders_meals',
-    db.Column('order_id', db.Integer, db.ForeignKey('orders.id')),
-    db.Column("meal_id", db.Integer, db.ForeignKey('meals.id')),
-)
+# table for ManyToMamy relationship between orders and meals
+# orders_meals_association = db.Table(
+#     'orders_meals',
+#
+#     db.Column('order_id', db.Integer, db.ForeignKey('orders.id')),
+#     db.Column('meal_id', db.Integer, db.ForeignKey('meals.id')),
+#     db.Column('meal_num', db.Integer, default=1, nullable=False),
+# )
+
+# for ManyToMany relationship with additional Column
+# https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html#association-object
+class Association_orders_meals(db.Model):
+    __tablename__ = 'association_orders_meals'
+
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), primary_key=True)
+    meal_id = db.Column('meal_id', db.Integer, db.ForeignKey('meals.id'), primary_key=True)
+    meal_num = db.Column(db.Integer, default=1, nullable=False) # колическтво заказанных блюд одного типа
+    meal = db.relationship('Meal', back_populates='orders')
+    order = db.relationship('Order', back_populates='meals')
 
 
 class User(db.Model):
@@ -52,7 +65,9 @@ class Meal(db.Model):
     category = db.relationship('Category', back_populates='meals')
     # category = db.relationship('Category', backref=backref('meals', uselist=False))
 
-    orders = db.relationship('Order', secondary=orders_meals_association, back_populates='meals')
+    # orders = db.relationship('Order', secondary=orders_meals_association, back_populates='meals')
+    orders = db.relationship('Association_orders_meals', back_populates='meal')
+
 
 
 class Category(db.Model):
@@ -77,4 +92,5 @@ class Order(db.Model):
     user = db.relationship('User')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # –– список блюд в заказе (можно через запятую, можно many2many)
-    meals = db.relationship('Meal', secondary=orders_meals_association, back_populates='orders')
+    # meals = db.relationship('Meal', secondary=orders_meals_association, back_populates='orders')
+    meals = db.relationship('Association_orders_meals', back_populates='order')

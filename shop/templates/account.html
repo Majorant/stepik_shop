@@ -24,9 +24,9 @@
             <div class="card-body">
               <div class="row">
                   {% for meal in order.meals %}
-                  <p class="col-4 text-muted">{{ meal.title }} </p>
-                  <p class="col-2 text-muted"> {{ ordered_meals|selectattr('id', 'equalto', meal.id)|list|length() }}</p>
-                  <p class="col-6 text-muted"> {{ meal.price }} </p>
+                  <p class="col-4 text-muted">{{ meal.meal.title }} </p>
+                  <p class="col-2 text-muted"> {{ meal.meal_num }}</p>
+                  <p class="col-6 text-muted"> {{ meal.meal.price*meal.meal_num }} </p>
                   {% endfor %}
               </div>
             </div>

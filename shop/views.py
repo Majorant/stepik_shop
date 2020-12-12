@@ -5,7 +5,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from shop import app, db
-from shop.models import User, Meal, Category, Order
+from shop.models import User, Meal, Category, Order, Association_orders_meals
 from shop.forms import CartForm, LoginForm, RegistrationForm
 
 
@@ -66,17 +66,25 @@ def account():
                     user_id = user.id,
                     )
         # в cart записаны id блюд
-        for id in session.get('cart', []):
+        # если блюда в заказе повторяются, то в таблицк для M2M будет только одна запись,
+        # напимер Заказ_6 - Блюдо_3, несмотря на то что Блюдо_3 было заказано два раза
+        for id in set(session.get('cart', [])):
             meal = db.session.query(Meal).filter(Meal.id == id).scalar()
-            order.meals.append(meal)
+            a = Association_orders_meals(meal_num=session['cart'].count(id))
+            a.meal = meal
+            order.meals.append(a)
         db.session.add(order)
         db.session.commit()
-
+        # заказ записан, удаляем из сессии
+        # всё, кроме 'cart' можно удалить при формировании заказа, удаляю здесь,
+        # на ввсякий случай после commit() в БД
+        session.pop('cart')
+        session.pop('order_summ')
+        session.pop('username')
+        session.pop('phone')
+        session.pop('address')
 
     orders = db.session.query(Order).filter(Order.user_id == user.id).order_by(Order.date.desc()).all()
-
-    print(user)
-    print(user.orders)
     return render_template('account.html', orders=orders)
 
 
